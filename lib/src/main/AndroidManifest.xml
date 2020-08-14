@@ -1,0 +1,15 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="per.wsj.lib.qrcodescanner">
+
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <application>
+        <activity android:name=".ScanActivity"
+            android:launchMode="singleTask"/>
+    </application>
+
+</manifest>
