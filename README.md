@@ -1,11 +1,11 @@
 # QrCodeScanner
 
-[![API](https://img.shields.io/badge/API-21%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=21) [![](https://jitpack.io/v/giswangsj/AndRatingBar.svg)](https://jitpack.io/#giswangsj/AndRatingBar)
+[![API](https://img.shields.io/badge/API-21%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=21) [![](https://jitpack.io/v/giswangsj/QrCodeScanner.svg)](https://jitpack.io/#giswangsj/QrCodeScanner)
 
-非常简单易用的android二维码扫描库，不需要申请权限，简单到一行代码搞定。当别人还在焦头烂额地写着代码，你已经在喝咖啡了。
+非常简单易用的android二维码扫描库，不需要你申请权限，简单到一行代码搞定。当别人还在焦头烂额地写着代码，你已经在喝咖啡了。
 
 
-**Customize Size**
+**Preview**
 
 ![Size Sample](img/preview.gif)
 
@@ -23,7 +23,7 @@ allprojects {
 }
 
 dependencies {
-	implementation 'com.github.giswangsj:QrCodeScanner:1.0.0'
+	implementation 'com.github.giswangsj:QrCodeScanner:v1.0.0'
 }
 ```
 
