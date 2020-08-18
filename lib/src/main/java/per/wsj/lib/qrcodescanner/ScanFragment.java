@@ -42,11 +42,12 @@ public class ScanFragment extends Fragment implements SurfaceHolder.Callback {
     private static final long VIBRATE_DURATION = 200L;
     private static final float BEEP_VOLUME = 0.10f;
 
-    private CaptureActivityHandler handler;
+    private CaptureActivityHandler mHandler;
     private ViewfinderView viewfinderView;
     private boolean hasSurface;
     private Vector<BarcodeFormat> decodeFormats;
     private String characterSet;
+    // 超时关闭计时器
     private InactivityTimer inactivityTimer;
     private MediaPlayer mediaPlayer;
     private boolean playBeep;
@@ -54,7 +55,7 @@ public class ScanFragment extends Fragment implements SurfaceHolder.Callback {
     private SurfaceView surfaceView;
     private SurfaceHolder surfaceHolder;
     private ScanCallback mScanCallback;
-    private Camera camera;
+    private Camera mCamera;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -113,9 +114,9 @@ public class ScanFragment extends Fragment implements SurfaceHolder.Callback {
     @Override
     public void onPause() {
         super.onPause();
-        if (handler != null) {
-            handler.quitSynchronously();
-            handler = null;
+        if (mHandler != null) {
+            mHandler.quitSynchronously();
+            mHandler = null;
         }
         CameraManager.get().closeDriver();
     }
@@ -152,7 +153,7 @@ public class ScanFragment extends Fragment implements SurfaceHolder.Callback {
     private void initCamera(SurfaceHolder surfaceHolder) {
         try {
             CameraManager.get().openDriver(surfaceHolder);
-            camera = CameraManager.get().getCamera();
+            mCamera = CameraManager.get().getCamera();
         } catch (Exception e) {
             if (callBack != null) {
                 callBack.callBack(e);
@@ -162,8 +163,8 @@ public class ScanFragment extends Fragment implements SurfaceHolder.Callback {
         if (callBack != null) {
             callBack.callBack(null);
         }
-        if (handler == null) {
-            handler = new CaptureActivityHandler(this, decodeFormats, characterSet, viewfinderView);
+        if (mHandler == null) {
+            mHandler = new CaptureActivityHandler(this, decodeFormats, characterSet, viewfinderView);
         }
     }
 
@@ -183,21 +184,19 @@ public class ScanFragment extends Fragment implements SurfaceHolder.Callback {
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         hasSurface = false;
-        if (camera != null) {
-            if (camera != null && CameraManager.get().isPreviewing()) {
-                if (!CameraManager.get().isUseOneShotPreviewCallback()) {
-                    camera.setPreviewCallback(null);
-                }
-                camera.stopPreview();
-                CameraManager.get().getPreviewCallback().setHandler(null, 0);
-                CameraManager.get().getAutoFocusCallback().setHandler(null, 0);
-                CameraManager.get().setPreviewing(false);
+        if (mCamera != null && CameraManager.get().isPreviewing()) {
+            if (!CameraManager.get().isUseOneShotPreviewCallback()) {
+                mCamera.setPreviewCallback(null);
             }
+            mCamera.stopPreview();
+            CameraManager.get().getPreviewCallback().setHandler(null, 0);
+            CameraManager.get().getAutoFocusCallback().setHandler(null, 0);
+            CameraManager.get().setPreviewing(false);
         }
     }
 
     public Handler getHandler() {
-        return handler;
+        return mHandler;
     }
 
     public void drawViewfinder() {
@@ -206,16 +205,14 @@ public class ScanFragment extends Fragment implements SurfaceHolder.Callback {
 
     private void initBeepSound() {
         if (playBeep && mediaPlayer == null) {
-            // The volume on STREAM_SYSTEM is not adjustable, and users found it
-            // too loud,
+            // The volume on STREAM_SYSTEM is not adjustable, and users found it too loud,
             // so we now play on the music stream.
             getActivity().setVolumeControlStream(AudioManager.STREAM_MUSIC);
             mediaPlayer = new MediaPlayer();
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mediaPlayer.setOnCompletionListener(beepListener);
 
-            AssetFileDescriptor file = getResources().openRawResourceFd(
-                    R.raw.beep);
+            AssetFileDescriptor file = getResources().openRawResourceFd(R.raw.beep);
             try {
                 mediaPlayer.setDataSource(file.getFileDescriptor(),
                         file.getStartOffset(), file.getLength());
