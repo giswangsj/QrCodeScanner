@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_second"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -8,5 +9,15 @@
         android:id="@+id/fl_my_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible"/>
+        android:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/ivLight"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:background="@drawable/selector_touch_btn"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="16dp"
+        app:srcCompat="@drawable/ic_flash_light" />
+
 </FrameLayout>

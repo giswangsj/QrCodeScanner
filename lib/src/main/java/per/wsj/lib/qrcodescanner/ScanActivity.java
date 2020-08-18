@@ -4,15 +4,19 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.PermissionChecker;
 
+import per.wsj.lib.qrcodescanner.camera.CameraManager;
 import per.wsj.lib.qrcodescanner.request.ScanCallback;
 
 
@@ -21,6 +25,10 @@ public class ScanActivity extends AppCompatActivity {
     private static final int REQUEST_CODE = 1 << 2;
 
     private static ScanCallback mScanCallback;
+
+    private ImageView ivLight;
+
+    private boolean isOpenLight = true;
 
     public static void startScan(Context context, ScanCallback scanCallback) {
         mScanCallback = scanCallback;
@@ -48,6 +56,15 @@ public class ScanActivity extends AppCompatActivity {
         } else {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CODE);
         }
+        // 闪光灯
+        ivLight = findViewById(R.id.ivLight);
+        ivLight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                QrCodeScanner.isLightEnable(isOpenLight);
+                isOpenLight = !isOpenLight;
+            }
+        });
     }
 
     @Override

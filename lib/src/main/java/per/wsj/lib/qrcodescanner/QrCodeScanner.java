@@ -36,12 +36,12 @@ public class QrCodeScanner {
 
 
     public static IRequest with(@NonNull final Context activity) {
-//        mRxPermissionsFragment = getLazySingleton(activity.getSupportFragmentManager());
         return new MyRequest(activity);
     }
 
     /**
      * 解析二维码图片工具类
+     *
      * @param scanCallback
      */
     public static void analyzeBitmap(String path, ScanCallback scanCallback) {
@@ -51,8 +51,7 @@ public class QrCodeScanner {
          */
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true; // 先获取原大小
-        Bitmap mBitmap = BitmapFactory.decodeFile(path, options);
-        options.inJustDecodeBounds = false; // 获取新的大小
+        BitmapFactory.decodeFile(path, options);
 
         int sampleSize = (int) (options.outHeight / (float) 400);
 
@@ -60,7 +59,8 @@ public class QrCodeScanner {
             sampleSize = 1;
         }
         options.inSampleSize = sampleSize;
-        mBitmap = BitmapFactory.decodeFile(path, options);
+        options.inJustDecodeBounds = false; // 获取新的大小
+        Bitmap mBitmap = BitmapFactory.decodeFile(path, options);
 
         MultiFormatReader multiFormatReader = new MultiFormatReader();
 
@@ -103,6 +103,7 @@ public class QrCodeScanner {
 
     /**
      * 生成二维码图片
+     *
      * @param text
      * @param w
      * @param h
@@ -114,7 +115,7 @@ public class QrCodeScanner {
             return null;
         }
         try {
-            Bitmap scaleLogo = getScaleLogo(logo,w,h);
+            Bitmap scaleLogo = getScaleLogo(logo, w, h);
 
             int offsetX = w / 2;
             int offsetY = h / 2;
@@ -137,17 +138,17 @@ public class QrCodeScanner {
             int[] pixels = new int[w * h];
             for (int y = 0; y < h; y++) {
                 for (int x = 0; x < w; x++) {
-                    if(x >= offsetX && x < offsetX + scaleWidth && y>= offsetY && y < offsetY + scaleHeight){
-                        int pixel = scaleLogo.getPixel(x-offsetX,y-offsetY);
-                        if(pixel == 0){
-                            if(bitMatrix.get(x, y)){
+                    if (x >= offsetX && x < offsetX + scaleWidth && y >= offsetY && y < offsetY + scaleHeight) {
+                        int pixel = scaleLogo.getPixel(x - offsetX, y - offsetY);
+                        if (pixel == 0) {
+                            if (bitMatrix.get(x, y)) {
                                 pixel = 0xff000000;
-                            }else{
+                            } else {
                                 pixel = 0xffffffff;
                             }
                         }
                         pixels[y * w + x] = pixel;
-                    }else{
+                    } else {
                         if (bitMatrix.get(x, y)) {
                             pixels[y * w + x] = 0xff000000;
                         } else {
@@ -166,27 +167,26 @@ public class QrCodeScanner {
         return null;
     }
 
-    private static Bitmap getScaleLogo(Bitmap logo, int w, int h){
-        if(logo == null) {
+    private static Bitmap getScaleLogo(Bitmap logo, int w, int h) {
+        if (logo == null) {
             return null;
         }
         Matrix matrix = new Matrix();
-        float scaleFactor = Math.min(w * 1.0f / 5 / logo.getWidth(), h * 1.0f / 5 /logo.getHeight());
-        matrix.postScale(scaleFactor,scaleFactor);
-        Bitmap result = Bitmap.createBitmap(logo, 0, 0, logo.getWidth(),   logo.getHeight(), matrix, true);
+        float scaleFactor = Math.min(w * 1.0f / 5 / logo.getWidth(), h * 1.0f / 5 / logo.getHeight());
+        matrix.postScale(scaleFactor, scaleFactor);
+        Bitmap result = Bitmap.createBitmap(logo, 0, 0, logo.getWidth(), logo.getHeight(), matrix, true);
         return result;
     }
 
     public static void isLightEnable(boolean isEnable) {
+        Camera camera = CameraManager.get().getCamera();
         if (isEnable) {
-            Camera camera = CameraManager.get().getCamera();
             if (camera != null) {
                 Camera.Parameters parameter = camera.getParameters();
                 parameter.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
                 camera.setParameters(parameter);
             }
         } else {
-            Camera camera = CameraManager.get().getCamera();
             if (camera != null) {
                 Camera.Parameters parameter = camera.getParameters();
                 parameter.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
