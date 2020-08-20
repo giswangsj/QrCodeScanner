@@ -91,8 +91,15 @@ final class DecodeHandler extends Handler {
         } finally {
             multiFormatReader.reset();
         }
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         if (rawResult != null) {
+            Log.e("wsj", "len: " + data.length);
+
             long end = System.currentTimeMillis();
             Log.d(TAG, "Found barcode (" + (end - start) + " ms):\n" + rawResult.toString());
             Message message = Message.obtain(fragment.getHandler(), R.id.decode_succeeded, rawResult);
@@ -101,6 +108,9 @@ final class DecodeHandler extends Handler {
             message.setData(bundle);
             //Log.d(TAG, "Sending decode succeeded message...");
             message.sendToTarget();
+//            for (int i = 0; i < data.length; i++) {
+//                Log.e("wsj", "i: " + data[i]);
+//            }
         } else {
             Message message = Message.obtain(fragment.getHandler(), R.id.decode_failed);
             message.sendToTarget();
