@@ -2,7 +2,11 @@ package per.wsj.lib.qrcodescanner;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
@@ -130,10 +134,42 @@ public class ScanActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_ALBUM) {
-            if(data!=null && data.getData()!=null){
-                Toast.makeText(this, data.getData().toString(), Toast.LENGTH_LONG).show();
+            if (data != null && data.getData() != null) {
+                QrCodeScanner.analyzeBitmap(getPathFromUri(data.getData()), new ScanCallback() {
+
+                    @Override
+                    public void onAnalyzeSuccess(Bitmap mBitmap, String result) {
+                        if (mScanCallback != null) {
+                            mScanCallback.onAnalyzeSuccess(mBitmap, result);
+                        }
+                        ScanActivity.this.finish();
+                    }
+
+                    @Override
+                    public void onAnalyzeFailed() {
+                        if (mScanCallback != null) {
+                            mScanCallback.onAnalyzeFailed();
+                        }
+                        ScanActivity.this.finish();
+                    }
+                });
             }
         }
+    }
+
+    /**
+     *
+     * @param uri
+     * @return
+     */
+    public String getPathFromUri(Uri uri) {
+        String[] projection = {MediaStore.Images.Media.DATA};
+        CursorLoader cursorLoader = new CursorLoader(this,uri,projection,null,null,null);
+        Cursor cursor = cursorLoader.loadInBackground();
+//        Cursor cursor = managedQuery(uri, projection, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
     }
 
     @Override
