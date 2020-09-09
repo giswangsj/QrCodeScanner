@@ -2,14 +2,23 @@
 
 [![API](https://img.shields.io/badge/API-21%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=21) [![](https://jitpack.io/v/giswangsj/QrCodeScanner.svg)](https://jitpack.io/#giswangsj/QrCodeScanner)
 
-非常简单易用的android二维码扫描库，不需要你申请权限，简单到一行代码搞定。当别人还在焦头烂额地写着代码，你已经在喝咖啡了。
+非常简单易用的android二维码扫描库，不需要你申请权限，简单到一行代码搞定。支持二维码扫描，本地二维码图片解析，二维码生成，闪光灯等。当别人还在焦头烂额地写着代码，你已经在喝咖啡了。
 
+## **Preview**
 
-**Preview**
+![二维码扫描](img/scan.gif)
 
-![Size Sample](img/preview.gif)
+![本地图片](img/localimage.gif)
 
+![本地图片](img/generate.gif)
 
+## Features
+
+-  QrCode Decode
+-  QrCode Encode
+-  Flash light
+-  Load and scan images containing QR Code
+-  Easy to use
 
 Implementation
 ----
@@ -23,7 +32,7 @@ allprojects {
 }
 
 dependencies {
-	implementation 'com.github.giswangsj:QrCodeScanner:v1.0.0'
+	implementation 'com.github.giswangsj:QrCodeScanner:v1.0.1'
 }
 ```
 
@@ -32,7 +41,8 @@ Usage
 
 In your activity or fragment
 
-```xml
+```kotlin
+// 扫描二维码
 QrCodeScanner.with(this)
     .onSuccess {
     	tvResult.text = "扫描结果：$it"
@@ -41,6 +51,11 @@ QrCodeScanner.with(this)
     	tvResult.text ="扫描失败：$it"
     }
     .start()
+
+
+// 二维码生成
+// 设置要生成的内容，大小以及logo
+val result = QrCodeScanner.createQrCode("content", 500, 500, null)
 ```
 
 ## License

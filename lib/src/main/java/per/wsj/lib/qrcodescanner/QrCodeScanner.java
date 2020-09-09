@@ -110,7 +110,7 @@ public class QrCodeScanner {
      * @param logo
      * @return
      */
-    public static Bitmap createImage(String text, int w, int h, Bitmap logo) {
+    public static Bitmap createQrCode(String text, int w, int h, Bitmap logo) {
         if (TextUtils.isEmpty(text)) {
             return null;
         }
